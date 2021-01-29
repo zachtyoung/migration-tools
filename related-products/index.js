@@ -46,7 +46,15 @@ const getRelatedSKUs = async (obj) =>{
         },
       }
     )
-    obj[i].id[j] = res.data.data[0].sku
+    // console.log(res.data.data[0].sku, res.data.data[0].availability, res.data.data[0].is_visible)
+    if(res.data.data[0].availability == 'disabled' || res.data.data[0].availability.toLowerCase() == 'discontinued' || res.data.data[0].is_visible != true){
+        console.log(res.data.data[0].sku + ' is not elligile for migration')
+        obj[i].id[j] = null
+    }else{
+        obj[i].id[j] = res.data.data[0].sku
+    }
+
+
     }
     }
 
