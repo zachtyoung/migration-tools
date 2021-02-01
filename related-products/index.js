@@ -1,8 +1,6 @@
 require('dotenv').config()
 const axios = require("axios");
 const product_sku_csv = ['pi_test_1', 'pi_test_2', 'pi_test_3', 'pi_test_4' ,'pi_test_5']
-let productID 
-let related_product_ids
 
 
 const getProducts = async (sku) =>{
