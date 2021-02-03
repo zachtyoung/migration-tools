@@ -1,0 +1,18 @@
+{
+  "name": "csv-editor",
+  "version": "1.0.0",
+  "description": "The CSV Parser import tool is expected to take a CSV of products and modify a specific column (category string), and append a category name to all rows with a value in that column",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zach Young",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^5.3.2",
+    "csv-parser": "^3.0.0",
+    "csvtojson": "^2.0.10",
+    "json2csv": "^5.0.5",
+    "papaparse": "^5.3.0"
+  }
+}

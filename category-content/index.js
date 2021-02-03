@@ -16,4 +16,8 @@ const getCategoryContent = async () =>{
     return buffer
   }
 
-getCategoryContent().then(res => console.log(res))
+getCategoryContent()
+.then(res => {
+    console.log(res)
+    
+})
