@@ -6,7 +6,7 @@ const axios = require("axios");
 
 let sourceStoreHash = 'yy9d3il1gg'
 let destinationStoreHash='bnr41x692p'
-let categoryNameAndId = []
+
 
 
 const getCategoryContent = async (storeHash, storeName) =>{
@@ -34,6 +34,11 @@ const getCustomTemplateAssociations = async (storeHash, storeName) =>{
         }})
         return response.data.data
 }
+const updateCustomTemplateAssociations = async()=>{
+
+}
+
+let categoryNameAndId = []
 let sourceStoreTemplates = getCustomTemplateAssociations(sourceStoreHash, 'SERVOCITY_STAGING')
 let destinationStoreTemplates = getCustomTemplateAssociations(destinationStoreHash, 'GOBILDA_STAGING')
 
