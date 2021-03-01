@@ -1,21 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Input, Select } from 'antd';
+import { Select } from 'antd';
+import { Steps, Button, message } from 'antd';
+
+const { Step } = Steps;
 const { Option } = Select;
-const selectBefore = (
-  <Select defaultValue="http://" className="select-before">
-    <Option value="http://">http://</Option>
-    <Option value="https://">https://</Option>
-  </Select>
-);
-const selectAfter = (
-  <Select defaultValue=".com" className="select-after">
-    <Option value=".com">.com</Option>
-    <Option value=".jp">.jp</Option>
-    <Option value=".cn">.cn</Option>
-    <Option value=".org">.org</Option>
-  </Select>
-);
+const steps = [
+  {
+    title: 'Select a site',
+    content: <Select
+    className='select'
+      style={{ width: 300 }}
+      placeholder="Select a site"
+      onChange={onChange}
+    >
+      <Option value="servocity">ServoCity</Option>
+      <Option value="gobilda">goBILDA</Option>
+    </Select>,
+  },
+  {
+    title: 'Excluded words',
+    content: <div className='excluded'>Excluded Words</div>,
+  },
+  {
+    title: 'Targeted words',
+    content: <div className='included'>Included Words</div> ,
+  },
+];
+
+function onChange(value) {
+  console.log(value);
+}
+
+
 
 
 const useEventSource = (url) => {
@@ -34,12 +51,54 @@ const useEventSource = (url) => {
 }
 
 function App() {
+  const [current, setCurrent] = React.useState(0);
 const data = useEventSource('http://localhost:5000/');
 if (!data) {
   return <div />;
 }
+const next = () => {
+  setCurrent(current + 1);
+};
 
-return <div className="container">{data&&data.map(el => <p>{el}</p>)}</div>;
+const prev = () => {
+  setCurrent(current - 1);
+};
+return <div className="page-container">
+  <div className='steps-wrapper'>
+  <div className="steps-content">{steps[current].content}</div>
+      <Steps className='steps' current={current}>
+        {steps.map(item => (
+          <Step key={item.title} title={item.title} />
+        ))}
+      </Steps>
+    
+      <div className="steps-action">
+      {current > 0 && (
+          <Button style={{ margin: '0 8px' }} onClick={() => prev()}>
+            Previous
+          </Button>
+        )}
+        {current < steps.length - 1 && (
+          <Button type="primary" onClick={() => next()}>
+            Next
+          </Button>
+        )}
+        {current === steps.length - 1 && (
+          <Button type="primary" onClick={() => message.success('Searching... this will take some time')}>
+            Run
+          </Button>
+        )}
+     
+      </div>
+      </div>
+  <div className="links-container">
+    <div><h2>Results</h2></div>
+    <div className='links'>
+  {data&&data.map(el => <h1>{el}</h1>)}
+  </div>
+  </div>
+  
+  </div>;
 }
 
 

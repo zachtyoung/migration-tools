@@ -1,0 +1,57 @@
+@import '~antd/dist/antd.css';
+html { height: 100%; }
+body { min-height: 100%; }
+.page-container{
+    padding: 50px;
+    width: 100%;
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+
+}
+.links-container{
+
+    background-color: rgb(209, 209, 209);
+    padding: 1rem;
+ 
+}
+h1{
+    font-size: 20px;
+    font-weight: 400;
+    margin: 0;
+}
+.links{
+    background-color: rgb(209, 209, 209);
+    overflow: auto;
+    padding: 1rem;
+    height: 550px;
+    margin: 0 -1rem -1rem ;
+}
+.select{
+    display: block;
+    margin: 0 auto;
+}
+
+.steps-wrapper{
+    position: relative;
+}
+.steps-content{
+
+}
+.included, .excluded{
+   height: 80%;
+   width: 33%;
+   margin: 0 auto;
+   text-align: center;
+}
+.steps{
+    position: absolute;
+    bottom: 100px;
+}
+.steps-action{
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+}

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require("cors");
 const server = express();
 var { SiteChecker } = require("broken-link-checker");
-
+const products = require('./products.js');
 server.use(express.json());
 server.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -11,6 +11,21 @@ server.use(function(req, res, next) {
     next();
   });
   server.get("/", (req, res) => {
+     products().then(sponse => {
+         let dis = sponse.filter(el =>{
+             if(el.availability_description.toLowerCase() == 'discontinued')
+             return el
+         })
+         Promise.all(dis).then(() => {
+            res.write(`data: ${JSON.stringify(dis)}\n\n`)})
+          });
+
+
+        //  dis.then(res =>{
+        //     res.write(`data: ${JSON.stringify(res)}\n\n`)})
+   
+       
+      
     res.set({
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
@@ -33,16 +48,22 @@ server.use(function(req, res, next) {
             excludeExternalLinks: false, 
             filterLevel: 0,
             acceptedSchemes: ["http", "https"],
-            excludedKeywords: ["linkedin"]
+            excludedKeywords: [], 
+            cacheResponses:true
         },
         {
             "error": (error) => {
                 console.error(error);
             },
+            "html":(tree, robots, response, pageURL, customData)=>{
+                // console.log(pageURL)
+            },
             "link": (result, customData) => {
+    
                 if(result.broken) {
+                    console.log(result)
                     if(result.http.response && ![undefined, 200].includes(result.http.response.statusCode)) {
-                        res.write(`data: ${JSON.stringify(result.http.response.statusCode + " " +result.url.original)}\n\n`)
+                        res.write(`data: ${JSON.stringify(result.http.response.statusCode + " " + result.base.original+ " "+result.url.original)}\n\n`)
                         // console.log(`${result.http.response.statusCode} => ${result.url.original}`);
                     }
                 }
