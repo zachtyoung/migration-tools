@@ -8,7 +8,7 @@ let sourceStoreHash = 'bnr41x692p'
 let sourceStore = 'GOBILDA_STAGING'
 let destinationStoreHash='yy9d3il1gg'
 let destinationStore='SERVOCITY_STAGING'
-
+let categoryNameAndId = []
 
 
 const getCategoryContent = async (storeHash, storeName) =>{
@@ -36,8 +36,21 @@ const getCustomTemplateAssociations = async (storeHash, storeName) =>{
         }})
         return response.data.data
 }
-const updateCustomTemplateAssociations = async()=>{
+const updateCustomTemplateAssociations = async(storeHash, storeName, categoriesArray)=>{
 
+  for(var i in categoriesArray){
+    axios.put(`https://api.bigcommerce.com/stores/${storeHash}/v3/storefront/custom-template-associations`,[{
+      "channel_id": 1,
+      "entity_type": "category",
+      "entity_id": categoriesArray[i].destination_id,
+      "file_name": categoriesArray[i].template
+  }], {
+      headers:{
+        'X-Auth-Client':process.env[storeName + '_CLIENT'],
+        'X-Auth-Token':process.env[storeName + '_TOKEN']
+      }})
+      .then(res => console.log(res))
+  }
 }
 const updateCategories = async (storeHash, storeName, categoriesArray) =>{
   for(var i in categoriesArray){
@@ -48,13 +61,11 @@ const updateCategories = async (storeHash, storeName, categoriesArray) =>{
         'X-Auth-Client':process.env[storeName + '_CLIENT'],
         'X-Auth-Token':process.env[storeName + '_TOKEN']
       }})
-      .then(res => console.log(res))
+      // .then(res => console.log(res))
   }
 }
 
-let categoryNameAndId = []
-let sourceStoreTemplates
-let destinationStoreTemplates
+
 getCategoryContent(sourceStoreHash, sourceStore)
 .then(res => {
     csv().fromFile(csvFilePath)
@@ -68,8 +79,7 @@ getCategoryContent(sourceStoreHash, sourceStore)
         }
     })
     .then(async () =>{
-      sourceStoreTemplates =  await getCustomTemplateAssociations(sourceStoreHash, sourceStore)
-      destinationStoreTemplates = await getCustomTemplateAssociations(destinationStoreHash, destinationStore)
+      let sourceStoreTemplates =  await getCustomTemplateAssociations(sourceStoreHash, sourceStore)
       for (var i in categoryNameAndId) {
         for (var j in sourceStoreTemplates) {
           if(categoryNameAndId[i].source_id == sourceStoreTemplates[j].entity_id){
@@ -93,6 +103,7 @@ getCategoryContent(sourceStoreHash, sourceStore)
       })
       .then(() =>{
         updateCategories(destinationStoreHash, destinationStore, categoryNameAndId)
+        updateCustomTemplateAssociations(destinationStoreHash, destinationStore, categoryNameAndId)
       })
      
     })
