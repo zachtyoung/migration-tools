@@ -78,6 +78,8 @@ getCategoryContent(sourceStoreHash, sourceStore)
             }
         }
     })
+
+    
     .then(async () =>{
       let sourceStoreTemplates =  await getCustomTemplateAssociations(sourceStoreHash, sourceStore)
       for (var i in categoryNameAndId) {
