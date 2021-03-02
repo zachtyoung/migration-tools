@@ -26,7 +26,6 @@ const getCategoryContent = async (storeHash, storeName) =>{
     } while (next);
     return buffer
   }
-
 const getCustomTemplateAssociations = async (storeHash, storeName) =>{
     storeName = storeName.toUpperCase()
       let response = await axios.get(`https://api.bigcommerce.com/stores/${storeHash}/v3/storefront/custom-template-associations?limit=250`, {
