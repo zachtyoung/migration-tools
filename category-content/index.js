@@ -2,7 +2,7 @@ require('dotenv').config()
 const csv=require('csvtojson');
 const csvFilePath='./categories.csv'
 const axios = require("axios");
-
+const fs = require('fs');
 
 let sourceStoreHash = 'bnr41x692p'
 let sourceStore = 'GOBILDA_STAGING'
@@ -49,7 +49,6 @@ const updateCustomTemplateAssociations = async(storeHash, storeName, categoriesA
         'X-Auth-Client':process.env[storeName + '_CLIENT'],
         'X-Auth-Token':process.env[storeName + '_TOKEN']
       }})
-      .then(res => console.log(res))
   }
 }
 const updateCategories = async (storeHash, storeName, categoriesArray) =>{
@@ -62,6 +61,21 @@ const updateCategories = async (storeHash, storeName, categoriesArray) =>{
         'X-Auth-Token':process.env[storeName + '_TOKEN']
       }})
       // .then(res => console.log(res))
+  }
+}
+const checkCategoryThumbnails = async (storeHash, storeName, categoriesArray) =>{
+  for(var i in categoriesArray){
+    axios.get(`https://api.bigcommerce.com/stores/${storeHash}/v3/catalog/categories/${categoriesArray[i].destination_id}`, {
+      headers:{
+        'X-Auth-Client':process.env[storeName + '_CLIENT'],
+        'X-Auth-Token':process.env[storeName + '_TOKEN']
+      }})
+      .then(res =>{
+        if(!res.data.data.image_url){
+          let data = JSON.stringify({"id":res.data.data.id, "name":res.data.data.name, "image":res.data.data.image_url});
+          fs.writeFileSync('output-log.json', data);
+        }
+      })
   }
 }
 
@@ -106,6 +120,7 @@ getCategoryContent(sourceStoreHash, sourceStore)
       .then(() =>{
         updateCategories(destinationStoreHash, destinationStore, categoryNameAndId)
         updateCustomTemplateAssociations(destinationStoreHash, destinationStore, categoryNameAndId)
+        checkCategoryThumbnails(destinationStoreHash, destinationStore, categoryNameAndId)
       })
      
     })
