@@ -19,10 +19,21 @@ const getAllProducts = async () => {
   getAllProducts()
   .then(res =>{
       for(var i in res){
+
           res[i].custom_fields.forEach(el =>{
               if(el.name == 'child_product' && !res[i].sku){
-                  console.log(res[i].name)
+                let slug = res[i].custom_url.url.replace(/\//g, '');
+                axios.put(
+                    `https://api.bigcommerce.com/stores/${storeHash}/v3/catalog/products/${res[i].id}`,{ "sku":`parent-${slug}` },
+                    {
+                      headers: {
+                        "X-Auth-Client": `${process.env.SC_S_CLIENT}`,
+                        "X-Auth-Token": `${process.env.SC_S_TOKEN}`,
+                      },
+                    }
+                  )
               }
           })
-      }
+
+    }
   })
